@@ -3,7 +3,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Optional
 
-from campaign_bot.storage.base import StorageEngine
+from .base import StorageEngine
 
 
 class LocalStorage(StorageEngine):

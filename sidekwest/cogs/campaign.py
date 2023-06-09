@@ -6,7 +6,7 @@ from typing import Iterable, NewType, Self, Union, assert_type, cast
 import discord
 from discord.ext import commands
 
-from campaign_bot.storage import Storable, StorageEngine, fetch_state
+from sidekwest.storage import Storable, StorageEngine, fetch_state
 
 UserId = NewType("UserId", int)
 IntoUserId = Union[UserId, int]
