@@ -3,6 +3,9 @@ import os
 import discord
 import dotenv
 
+from sidekwest.cogs.campaign import CampaignCog
+from sidekwest.storage import DEFAULT_ENGINES
+
 dotenv.load_dotenv()
 GUILD_ID = int(os.environ['GUILD_ID'])
 
@@ -33,6 +36,7 @@ async def ping(ctx):
 
 def main():
     bot.add_application_command(verify)
+    bot.add_cog(CampaignCog(bot), engines=DEFAULT_ENGINES)
     bot.run(os.environ["DISCORD_TOKEN"])
 
 
