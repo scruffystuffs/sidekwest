@@ -59,5 +59,5 @@ class StorageEngine(ABC):
         pass
 
     @abstractmethod
-    def save_state(self, data: dict):
+    def save_state(self, storage_key: str, data: dict):
         pass
