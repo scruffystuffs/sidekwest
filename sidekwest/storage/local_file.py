@@ -1,24 +1,35 @@
 import json
-from os import PathLike
 from pathlib import Path
-from typing import TypeAlias
+from typing import Optional
+
+from sidekwest import IntoPath
 
 from .base import StorageEngine
 
-IntoPath: TypeAlias = str | PathLike[str]
+DEFAULT_LOCATION = ".storage"
+ENCODING = "utf-8"
+
 
 class LocalStorage(StorageEngine):
-    def __init__(self, storage_dir: IntoPath) -> None:
+    def __init__(self, storage_dir: Optional[IntoPath] = None) -> None:
+        if storage_dir is None:
+            storage_dir = DEFAULT_LOCATION
         self._storage_dir = Path(storage_dir)
-        assert self._storage_dir.is_dir()
+        if not self._storage_dir.is_dir():
+            self._storage_dir.mkdir(0o755, parents=True, exist_ok=True)
 
     def load_state(self, storage_key: str) -> dict:
-        with self._resolve_filepath(storage_key).open("r", encoding="utf-8") as jfp:
-            state: dict = json.load(jfp)
+        try:
+            with self._resolve_filepath(storage_key).open(
+                "r", encoding=ENCODING
+            ) as jfp:
+                state: dict = json.load(jfp)
+        except FileNotFoundError:
+            state = {}
         return state
 
     def save_state(self, storage_key: str, data: dict):
-        with self._resolve_filepath(storage_key).open("w", encoding="utf-8") as jfp:
+        with self._resolve_filepath(storage_key).open("w", encoding=ENCODING) as jfp:
             json.dump(data, jfp, sort_keys=True)
 
     def _resolve_filepath(self, storage_key: str) -> Path:
