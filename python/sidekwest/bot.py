@@ -116,14 +116,17 @@ async def cleanup_demo(
             tgrp.create_task(cat.delete(reason="test category creation and deletion"))
 
 
-def main():
+async def async_main():
     dotenv.load_dotenv()
     guild_id = int(os.environ["GUILD_ID"])
     bot.debug_guilds = [guild_id]
     # bot.add_application_command(verify)
-    bot.add_cog(CampaignCog(bot, DEFAULT_ENGINES))
-    bot.run(os.environ["DISCORD_TOKEN"])
+    bot.add_cog(await CampaignCog.create(bot, DEFAULT_ENGINES))
+    await bot.start(os.environ["DISCORD_TOKEN"])
 
+
+def main():
+    asyncio.run(async_main())
 
 if __name__ == "__main__":
     main()

@@ -31,9 +31,9 @@ class Storable(ABC):
         raise MissingState(KeyError)
 
     @classmethod
-    def load_json(cls, engine: StorageEngine) -> Self:
+    async def load_json(cls, engine: StorageEngine) -> Self:
         key = cls.storage_key()
-        state = engine.load_state(key)
+        state = await engine.load_state(key)
         if state is None:
             return cls.default()
         return cls.from_json(state)
@@ -43,13 +43,13 @@ class Storable(ABC):
         pass
 
     @classmethod
-    def fetch(cls, engines: list[StorageEngine]) -> Self:
+    async def fetch(cls, engines: list[StorageEngine]) -> Self:
         if not engines:
             raise ValueError("No engines enabled")
         last_err: Optional[MissingState] = None
         for engine in engines:
             try:
-                return cls.load_json(engine)
+                return await cls.load_json(engine)
             except MissingState as exc:
                 last_err = exc
         if last_err is None:
@@ -58,12 +58,12 @@ class Storable(ABC):
             ), "Insanity: no error was recorded, but no engine succeeded in loading state"
         raise last_err
 
-    def save(self, engines: list[StorageEngine]):
+    async def save(self, engines: list[StorageEngine]):
         errs: list[Exception] = []
         for engine in engines:
             try:
                 data = self.to_json()
-                engine.save_state(self.storage_key(), data)
+                await engine.save_state(self.storage_key(), data)
             except EngineSaveError as exc:
                 errs.append(exc)
         if errs:
@@ -72,9 +72,9 @@ class Storable(ABC):
 
 class StorageEngine(ABC):
     @abstractmethod
-    def load_state(self, storage_key: str) -> dict:
+    async def load_state(self, storage_key: str) -> dict:
         pass
 
     @abstractmethod
-    def save_state(self, storage_key: str, data: dict):
+    async def save_state(self, storage_key: str, data: dict):
         pass

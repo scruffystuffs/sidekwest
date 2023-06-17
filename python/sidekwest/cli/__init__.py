@@ -1,8 +1,19 @@
-from typing import Optional
-import click
-from sidekwest.campaign import Campaign, CampaignState
+import asyncio
+from functools import wraps
+from typing import Callable, Optional
 
+import click
+
+from sidekwest.campaign import Campaign, CampaignState
 from sidekwest.cli.state import CommandState, LocalStorageOptions
+
+
+def async_command(f: Callable):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+
+    return wrapper
 
 
 @click.group
@@ -39,14 +50,15 @@ def campaign(
 @click.argument("leader", required=True)
 @click.argument("members", nargs=-1)
 @click.pass_obj
-def add(state: CommandState, leader: int, members: list[int]):
+@async_command
+async def add(state: CommandState, leader: int, members: list[int]):
     """Add a campiagn to the existing data"""
 
     engines = state.to_engines()
-    camp_state = CampaignState.fetch(engines)
+    camp_state = await CampaignState.fetch(engines)
     new_campaign = Campaign(members, leader, camp_state.generate_new_id())
     camp_state.add_campaign(new_campaign)
-    camp_state.save(engines)
+    await camp_state.save(engines)
 
 
 @sidekwest_cli.command
@@ -60,6 +72,7 @@ def bot():
 def main():
     # pylint: disable=all
     sidekwest_cli(obj=CommandState())
+
 
 if __name__ == "__main__":
     main()
