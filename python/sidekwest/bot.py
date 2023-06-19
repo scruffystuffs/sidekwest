@@ -11,8 +11,6 @@ import dotenv
 from sidekwest.cogs.campaign import CampaignCog
 from sidekwest.storage import DEFAULT_ENGINES
 
-PADDING_CHANNEL_ID = 1117479742162083940
-
 bot = discord.Bot(intents=discord.Intents.default())
 
 start_time: int = 0
