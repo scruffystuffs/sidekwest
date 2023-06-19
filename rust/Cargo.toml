@@ -1,0 +1,19 @@
+[package]
+name = "sidekwest"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.68"
+dotenv = "0.15.0"
+eyre = "0.6.8"
+fnv = "1.0.7"
+nutype = { version = "0.2.0", features = ["serde"] }
+pest = "2.6.0"
+pest_derive = "2.6.0"
+poise = "0.5.5"
+serde = "1.0.164"
+serde_json = "1.0.97"
+tokio = { version = "1.28.2", features = ["full"] }
