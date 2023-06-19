@@ -5,7 +5,7 @@ import os
 import time
 
 import discord
-from discord import ApplicationContext 
+from discord import ApplicationContext
 import dotenv
 
 from sidekwest.cogs.campaign import CampaignCog
