@@ -3,10 +3,9 @@ from datetime import datetime
 import math
 import os
 import time
-from typing import Optional
 
 import discord
-from discord import ApplicationContext, CategoryChannel
+from discord import ApplicationContext 
 import dotenv
 
 from sidekwest.cogs.campaign import CampaignCog
