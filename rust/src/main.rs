@@ -5,9 +5,7 @@ use poise::serenity_prelude as serenity;
 
 use eyre::Result;
 
-mod campaign;
 mod events;
-mod storage;
 
 pub struct Data {} // User data, which is stored and accessible in all command invocations
 pub type Error = eyre::Error;
